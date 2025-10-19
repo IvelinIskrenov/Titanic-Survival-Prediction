@@ -1,17 +1,20 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-from sklearn.model_selection import train_test_split, GridSearchCV, StratifiedKFold
+from sklearn.model_selection import train_test_split, GridSearchCV, cross_val_score, StratifiedKFold
 from sklearn.preprocessing import StandardScaler, OneHotEncoder
+from sklearn.decomposition import PCA
+from sklearn.neighbors import KNeighborsClassifier
 from sklearn.pipeline import Pipeline
 import seaborn as sns
 from sklearn.compose import ColumnTransformer
 from sklearn.impute import SimpleImputer
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import classification_report, confusion_matrix
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import classification_report, confusion_matrix, ConfusionMatrixDisplay
 
 
-class TitanicSurvavalPrediction():
+class TitanicSurvivalPrediction():
     
     def __init__(self):
         self.__data = None
@@ -22,8 +25,14 @@ class TitanicSurvavalPrediction():
         self.__y_train = None
         self.__y_test = None
         self.__preprocessor = None
-        self.__model = None
+        self.__pipeline = None
+        self.__model_RF = None
+        self.__model_LR = None
         self.__y_pred = None
+        
+        self.__numerical_features = None
+        self.__categorical_features = None
+        
         
     def data_explain_analysis(self) -> None:
         print(f"Value counts")
@@ -45,10 +54,36 @@ class TitanicSurvavalPrediction():
         self.__y = self.__data[target]
         self.__X_train, self.__X_test, self.__y_train, self.__y_test = train_test_split(self.__X, self.__y, test_size=0.2, random_state=42, stratify=self.__y)
     
+    def feature_importances(self) -> None:
+        try:
+            self.__model_RF.best_estimator_['preprocessor'].named_transformers_['cat'].named_steps['onehot'].get_feature_names_out(self.__categorical_features)
+            feature_importances = self.__model_RF.best_estimator_['classifier'].feature_importances_
+
+            # Combine the numerical and one-hot encoded categorical feature names
+            feature_names = self.__numerical_features + list(model.best_estimator_['preprocessor']
+                                                    .named_transformers_['cat']
+                                                    .named_steps['onehot']
+                                                    .get_feature_names_out(self.__categorical_features))
+    
+            importance_df = pd.DataFrame({'Feature': feature_names,
+                                        'Importance': feature_importances
+                                        }).sort_values(by='Importance', ascending=False)
+
+            # Plotting
+            plt.figure(figsize=(10, 6))
+            plt.barh(importance_df['Feature'], importance_df['Importance'], color='skyblue')
+            plt.gca().invert_yaxis() 
+            plt.title('Most Important Features in predicting whether a passenger survived')
+            plt.xlabel('Importance Score')
+            plt.show()
+        except Exception:
+            print("Error in feature_importance !!!")
+            
+
     def preprocessing(self) -> None:
         
-        numerical_features = self.__X_train.select_dtypes(include=['number']).columns.tolist()
-        categorical_features = self.__X_train.select_dtypes(include=['object', 'category']).columns.tolist()
+        self.__numerical_features = self.__X_train.select_dtypes(include=['number']).columns.tolist()
+        self.__categorical_features = self.__X_train.select_dtypes(include=['object', 'category']).columns.tolist()
         
         # preprocessing pipelines for both feature types
         numerical_transformer = Pipeline(steps=[
@@ -63,12 +98,12 @@ class TitanicSurvavalPrediction():
         
         self.__preprocessor = ColumnTransformer(
             transformers=[
-                ('num', numerical_transformer, numerical_features),
-                ('cat', categorical_transformer, categorical_features)
+                ('num', numerical_transformer, self.__numerical_features),
+                ('cat', categorical_transformer, self.__categorical_features)
             ])
         
     def train_RF(self) -> None:
-        pipeline = Pipeline(steps=[
+        self.__pipeline = Pipeline(steps=[
             ('preprocessor', self.__preprocessor),
             ('classifier', RandomForestClassifier(random_state=42))
         ])
@@ -83,13 +118,66 @@ class TitanicSurvavalPrediction():
         #Perform grid search cross-validation && fit to the best model
         cv = StratifiedKFold(n_splits=5, shuffle=True) # 5/10 folds
         
-        self.__model = GridSearchCV(estimator=pipeline, param_grid=param_grid, cv=cv, scoring='accuracy', verbose=2)
-        self.__model.fit(self.__X_train, self.__y_train)
+        self.__model_RF = GridSearchCV(estimator=self.__pipeline, param_grid=param_grid, cv=cv, scoring='accuracy', verbose=2)
+        self.__model_RF.fit(self.__X_train, self.__y_train)
+    
+    def train_logistic_regression(self) -> None:
+        #self.__pipeline.set_params(classifier=LogisticRegression(random_state=42))
+        self.__pipeline = Pipeline(steps=[
+            ('preprocessor', self.__preprocessor),
+            ('classifier', LogisticRegression(random_state=42, max_iter=2000))
+        ])
+
+        # Define a new grid with Logistic Regression parameters
+        param_grid = {
+            'classifier__solver' : ['liblinear'],
+            'classifier__penalty': ['l1', 'l2'],
+            'classifier__class_weight' : [None, 'balanced']
+        }
+        cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+
+        self.__model_LR = GridSearchCV(estimator=self.__pipeline,
+                                    param_grid=param_grid,
+                                    cv=cv,
+                                    scoring='accuracy',
+                                    verbose=2)
+        self.__model_LR.fit(self.__X_train, self.__y_train)
+    
+    def LR_feature_coeff(self) -> None:
+        coefficients = self.__model_LR.best_estimator_.named_steps['classifier'].coef_[0]
+
+        # Combine numerical and categorical feature names
+        numerical_feature_names = self.__numerical_features
+        categorical_feature_names = (self.__model_LR.best_estimator_.named_steps['preprocessor']
+                                            .named_transformers_['cat']
+                                            .named_steps['onehot']
+                                            .get_feature_names_out(self.__categorical_features)
+                                    )
+        feature_names = numerical_feature_names + list(categorical_feature_names)
         
-    def model_predict(self) -> None:
-        self.__y_pred = self.__model.predict(self.__X_test)
-        print(classification_report(self.__y_test, self.__y_pred))   
+        #ploting
+        importance_df = pd.DataFrame({
+            'Feature': feature_names,
+            'Coefficient': coefficients
+        }).sort_values(by='Coefficient', ascending=False, key=abs)  # Sort by absolute values
+
+        # Plotting
+        plt.figure(figsize=(10, 6))
+        plt.barh(importance_df['Feature'], importance_df['Coefficient'].abs(), color='skyblue')
+        plt.gca().invert_yaxis()
+        plt.title('Feature Coefficient magnitudes for Logistic Regression model')
+        plt.xlabel('Coefficient Magnitude')
+        plt.show()
+
         
+    def model_predict(self, model) -> None:
+        if model == "RF":            
+            self.__y_pred = self.__model_RF.predict(self.__X_test)
+            print(classification_report(self.__y_test, self.__y_pred))
+        elif model == "LR":
+            self.__y_pred = self.__model_LR.predict(self.__X_test)
+            print(classification_report(self.__y_test, self.__y_pred))
+              
     def plot_confuxion_matrix(self) -> None:
         conf_matrix = confusion_matrix(self.__y_test, self.__y_pred)
 
@@ -105,16 +193,33 @@ class TitanicSurvavalPrediction():
         plt.tight_layout()
         plt.show()
 
-    def pipeline(self):
+    def print_test_score(self, model) -> None:
+        # Print test score
+        if model == "RF":            
+            test_score = self.__model_RF.score(self.__X_test, self.__y_test)
+            print(f"\nTest set accuracy of Random Forest: {test_score:.2%}")
+        elif model == "LR":
+            test_score = self.__model_LR.best_estimator_.score(self.__X_test, self.__y_test)
+            print(f"\nTest set accuracy of Logistic Regression: {test_score:.2%}")
+        
+    def run_pipeline(self):
         self.load_data()
         self.split_data()
-        #self.data_explain_analysis()
+        self.data_explain_analysis()
         self.preprocessing()
         self.train_RF()
-        self.model_predict()
+        self.model_predict("RF")
         self.plot_confuxion_matrix()
+        self.print_test_score("RF")
+        
+        self.feature_importances()
+        self.train_logistic_regression()
+        self.LR_feature_coeff()
+        self.model_predict("LR")
+        self.plot_confuxion_matrix()
+        self.print_test_score("LR")
             
 if __name__ == "__main__":
-    model = TitanicSurvavalPrediction()
-    model.pipeline()
+    model = TitanicSurvivalPrediction()
+    model.run_pipeline()
     
