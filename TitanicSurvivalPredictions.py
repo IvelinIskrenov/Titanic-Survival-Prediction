@@ -39,6 +39,7 @@ class TitanicSurvivalPrediction():
         print(self.__y.value_counts())
     
     def load_data(self) -> None:
+        '''Loading data from sns.'''
         try:
             self.__data = sns.load_dataset('titanic')
             print(self.__data.head())
@@ -47,6 +48,10 @@ class TitanicSurvivalPrediction():
             print(f"Loading data failed !!!")
     
     def split_data(self) -> None:
+        '''Select features/target and splits data 80-20 %'''
+        if self.__data is None or self.__data.empty:
+            raise RuntimeError("Data not loaded")
+        
         features = ['pclass', 'sex', 'age', 'sibsp', 'parch', 'fare', 'class', 'who', 'adult_male', 'alone']
         target = 'survived'
         
@@ -55,12 +60,13 @@ class TitanicSurvivalPrediction():
         self.__X_train, self.__X_test, self.__y_train, self.__y_test = train_test_split(self.__X, self.__y, test_size=0.2, random_state=42, stratify=self.__y)
     
     def feature_importances(self) -> None:
+        '''Extract and plot feature importances from the best RF estimator'''
         try:
-            self.__model_RF.best_estimator_['preprocessor'].named_transformers_['cat'].named_steps['onehot'].get_feature_names_out(self.__categorical_features)
+            self.__model_LR.best_estimator_['preprocessor'].named_transformers_['cat'].named_steps['onehot'].get_feature_names_out(self.__categorical_features)
             feature_importances = self.__model_RF.best_estimator_['classifier'].feature_importances_
 
             # Combine the numerical and one-hot encoded categorical feature names
-            feature_names = self.__numerical_features + list(model.best_estimator_['preprocessor']
+            feature_names = self.__numerical_features + list(self.__model_LR.best_estimator_['preprocessor']
                                                     .named_transformers_['cat']
                                                     .named_steps['onehot']
                                                     .get_feature_names_out(self.__categorical_features))
@@ -81,7 +87,10 @@ class TitanicSurvivalPrediction():
             
 
     def preprocessing(self) -> None:
-        
+        '''
+            Build ColumnTransformer using simple imputation + scaling / one-hot encoding
+            Select dtypes from train set and preserve the order
+        '''
         self.__numerical_features = self.__X_train.select_dtypes(include=['number']).columns.tolist()
         self.__categorical_features = self.__X_train.select_dtypes(include=['object', 'category']).columns.tolist()
         
@@ -103,46 +112,55 @@ class TitanicSurvivalPrediction():
             ])
         
     def train_RF(self) -> None:
-        self.__pipeline = Pipeline(steps=[
-            ('preprocessor', self.__preprocessor),
-            ('classifier', RandomForestClassifier(random_state=42))
-        ])
+        '''Train RandomForest with GridSearchCV && '''
+        try:           
+            self.__pipeline = Pipeline(steps=[
+                ('preprocessor', self.__preprocessor),
+                ('classifier', RandomForestClassifier(random_state=42))
+            ])
         
-        #prepruning
-        param_grid = {
-            'classifier__n_estimators': [50, 100],
-            'classifier__max_depth': [None, 10, 20],
-            'classifier__min_samples_split': [2, 5]
-        }
+            #prepruning
+            param_grid = {
+                'classifier__n_estimators': [50, 100],
+                'classifier__max_depth': [None, 10, 20],
+                'classifier__min_samples_split': [2, 5]
+            }
         
-        #Perform grid search cross-validation && fit to the best model
-        cv = StratifiedKFold(n_splits=5, shuffle=True) # 5/10 folds
+            #Perform grid search cross-validation && fit to the best model
+            cv = StratifiedKFold(n_splits=5, shuffle=True) # 5/10 folds
         
-        self.__model_RF = GridSearchCV(estimator=self.__pipeline, param_grid=param_grid, cv=cv, scoring='accuracy', verbose=2)
+            self.__model_RF = GridSearchCV(estimator=self.__pipeline, param_grid=param_grid, cv=cv, scoring='accuracy', verbose=2)
+        except Exception:
+            print(f"Error during build the model !!!")
+        
         self.__model_RF.fit(self.__X_train, self.__y_train)
     
     def train_logistic_regression(self) -> None:
-        #self.__pipeline.set_params(classifier=LogisticRegression(random_state=42))
-        self.__pipeline = Pipeline(steps=[
-            ('preprocessor', self.__preprocessor),
-            ('classifier', LogisticRegression(random_state=42, max_iter=2000))
-        ])
+        '''Train Logistic Regression using GridSearchCV over penalties and class weights'''
+        try:
+            self.__pipeline = Pipeline(steps=[
+                ('preprocessor', self.__preprocessor),
+                ('classifier', LogisticRegression(random_state=42, max_iter=2000))
+            ])
 
-        # Define a new grid with Logistic Regression parameters
-        param_grid = {
-            'classifier__solver' : ['liblinear'],
-            'classifier__penalty': ['l1', 'l2'],
-            'classifier__class_weight' : [None, 'balanced']
-        }
-        cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+            # Define a new grid with Logistic Regression parameters
+            param_grid = {
+                'classifier__solver' : ['liblinear'],
+                'classifier__penalty': ['l1', 'l2'],
+                'classifier__class_weight' : [None, 'balanced']
+            }
+            cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
 
-        self.__model_LR = GridSearchCV(estimator=self.__pipeline,
-                                    param_grid=param_grid,
-                                    cv=cv,
-                                    scoring='accuracy',
-                                    verbose=2)
+            self.__model_LR = GridSearchCV(estimator=self.__pipeline,
+                                        param_grid=param_grid,
+                                        cv=cv,
+                                        scoring='accuracy',
+                                        verbose=2)
+        except Exception:
+            print(f"Error during build the Logistic Regression model !!!")
+            
         self.__model_LR.fit(self.__X_train, self.__y_train)
-    
+        
     def LR_feature_coeff(self) -> None:
         coefficients = self.__model_LR.best_estimator_.named_steps['classifier'].coef_[0]
 
@@ -207,12 +225,17 @@ class TitanicSurvivalPrediction():
         self.split_data()
         self.data_explain_analysis()
         self.preprocessing()
+        
+        #Random Forest
         self.train_RF()
         self.model_predict("RF")
         self.plot_confuxion_matrix()
         self.print_test_score("RF")
         
+        #feature importances
         self.feature_importances()
+        
+        #Logistic Regression
         self.train_logistic_regression()
         self.LR_feature_coeff()
         self.model_predict("LR")
