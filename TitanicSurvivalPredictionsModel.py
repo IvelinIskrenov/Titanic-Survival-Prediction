@@ -14,8 +14,8 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import classification_report, confusion_matrix, ConfusionMatrixDisplay
 
 
-class TitanicSurvivalPrediction():
-    
+class SurvivalPrediction():
+    '''Titanic survival predictor with bagging -> RF, LR'''
     def __init__(self):
         self.__data = None
         self.__X = None
@@ -243,6 +243,6 @@ class TitanicSurvivalPrediction():
         self.print_test_score("LR")
             
 if __name__ == "__main__":
-    model = TitanicSurvivalPrediction()
+    model = SurvivalPrediction()
     model.run_pipeline()
     
