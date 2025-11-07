@@ -24,3 +24,11 @@ pre {
     padding: 15px;
     border-radius: 6px;
 }
+
+h1 {
+    text-align:center;
+}
+
+nav {
+    text-align: center;
+}
