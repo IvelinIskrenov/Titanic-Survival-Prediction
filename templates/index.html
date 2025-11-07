@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ML Flask App</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>🚢 Titanic Survival Predictor 🚢</h1>
+    <button onclick="train()">Train Model</button>
+    <button onclick="evaluate()">Evaluate</button>
+    <button onclick="checkStatus()">Check Status</button>
+    <pre id="output"></pre>
+</body>
+</html>
