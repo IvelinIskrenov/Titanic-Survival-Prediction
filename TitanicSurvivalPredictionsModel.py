@@ -219,6 +219,9 @@ class SurvivalPrediction():
         elif model == "LR":
             test_score = self.__model_LR.best_estimator_.score(self.__X_test, self.__y_test)
             print(f"\nTest set accuracy of Logistic Regression: {test_score:.2%}")
+    
+    def make_single_predict():
+        PD
         
     def run_pipeline(self):
         self.load_data()

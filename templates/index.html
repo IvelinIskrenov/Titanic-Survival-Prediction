@@ -7,10 +7,36 @@
 <body>
     <h1>🚢 Titanic Survival Predictor 🚢</h1>
     <nav>
-        <button onclick="train()">Train Model</button>
+        <button onclick="trainLR()">Train Model with Logistic Regression</button>
+        <button onclick="trainRF()">Train Model with Random Forest</button>
         <button onclick="evaluate()">Evaluate</button>
         <button onclick="checkStatus()">Check Status</button>
     </nav>
+    <form>
+        
+    </form>
     <pre id="output"></pre>
+    <script>
+            async function train() 
+            {
+                const res = await fetch('/train');
+                const data = await res.json();
+                document.getElementById('output').textContent = JSON.stringify(data, null, 2);
+            }
+
+            async function evaluate() 
+            {
+                const res = await fetch('/evaluate');
+                const data = await res.json();
+                document.getElementById('output').textContent = JSON.stringify(data, null, 2);
+            }
+
+            async function checkStatus() 
+            {
+                const res = await fetch('/status');
+                const data = await res.json();
+                document.getElementById('output').textContent = JSON.stringify(data, null, 2);
+            }
+        </script>
 </body>
 </html>
