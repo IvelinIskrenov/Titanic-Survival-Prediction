@@ -17,7 +17,6 @@ def train():
     try:
         model.load_data()
         model.split_data()
-        #data analysis skip
         model.preprocessing()
         model.train_RF()
         trained = True

@@ -6,13 +6,15 @@ body {
 }
 
 button {
+    background-color: hsl(200, 95%, 45%);
+    color: rgb(40, 50, 250);
     padding: 10px 15px;
     margin-right: 10px;
     border: none;
     border-radius: 6px;
-    background: #007bff;
-    color: white;
     cursor: pointer;
+    width: 100%;
+    transition: all 0.4s ease;
 }
 
 button:hover {
