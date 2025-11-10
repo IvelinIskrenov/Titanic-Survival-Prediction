@@ -262,5 +262,6 @@ class SurvivalPrediction():
             
 if __name__ == "__main__":
     model = SurvivalPrediction()
+    print(f"")
     model.run_pipeline()
     

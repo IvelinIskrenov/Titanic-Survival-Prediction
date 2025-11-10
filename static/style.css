@@ -33,4 +33,50 @@ h1 {
 
 nav {
     text-align: center;
+    background-color: #1656d7;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    border-radius: 8px;
+    padding: 10px 20px;
+    margin-bottom: 30px;
+}
+
+nav ul {
+    list-style: none;        /* премахва булетите */
+    padding: 0;
+    margin: 0;
+    display: flex;           /* прави елементите хоризонтални */
+    justify-content: center; /* центрира ги хоризонтално */
+    gap: 20px;               /* разстояние между бутоните */
+}
+
+nav li {
+    display: inline;         /* осигурява хоризонтално подреждане */
+}
+
+nav a {
+    text-decoration: none;
+    color: #0077cc;
+    font-weight: bold;
+    padding: 8px 14px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+nav a:hover {
+    background-color: #0077cc;
+    color: white;
+}
+
+
+form {
+    background-color: rgb(255, 255, 255);
+    padding: 30px;
+    border-color: rgb(10, 134, 10);
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+    width: 100%;
+    max-width: 420px;
+    display: flex;
+    flex-direction: column; 
+    gap: 15px; 
 }
