@@ -3,6 +3,16 @@ body {
     background: #f6f9fc;
     padding: 30px;
     color: #333;
+    background-image: url("BG5.jpg");
+    background-color: #cccccc;
+    background-size: cover; /* или contain */
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed; /* по избор */
+    margin: 0;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
 }
 
 button {
@@ -55,7 +65,7 @@ nav li {
 
 nav a {
     text-decoration: none;
-    color: #0077cc;
+    color: #fcfdfd;
     font-weight: bold;
     padding: 8px 14px;
     border-radius: 6px;
@@ -63,20 +73,21 @@ nav a {
 }
 
 nav a:hover {
-    background-color: #0077cc;
-    color: white;
+    background-color: #704af8;
+    color: rgb(162, 204, 252);
 }
 
 
 form {
     background-color: rgb(255, 255, 255);
     padding: 30px;
-    border-color: rgb(10, 134, 10);
+    border: 2px solid rgb(10, 134, 10);
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
     width: 100%;
-    max-width: 420px;
+    max-width: 350px;
     display: flex;
-    flex-direction: column; 
+    flex-direction: column;
+    text-align: center; 
     gap: 15px; 
 }

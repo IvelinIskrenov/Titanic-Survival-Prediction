@@ -42,7 +42,7 @@ class SurvivalPrediction():
         '''Loading data from sns.'''
         try:
             self.__data = sns.load_dataset('titanic')
-            print(self.__data.head())
+            print(self.__data.head(100))
             
         except  Exception:
             print(f"Loading data failed !!!")
