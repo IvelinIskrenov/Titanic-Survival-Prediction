@@ -51,16 +51,16 @@ nav {
 }
 
 nav ul {
-    list-style: none;        /* премахва булетите */
+    list-style: none;
     padding: 0;
     margin: 0;
-    display: flex;           /* прави елементите хоризонтални */
-    justify-content: center; /* центрира ги хоризонтално */
-    gap: 20px;               /* разстояние между бутоните */
+    display: flex;           /* ements -> horizontal */
+    justify-content: center; 
+    gap: 20px;               /* gap btw buttons */
 }
 
 nav li {
-    display: inline;         /* осигурява хоризонтално подреждане */
+    display: inline;         /* horizontal */
 }
 
 nav a {
@@ -90,4 +90,18 @@ form {
     flex-direction: column;
     text-align: center; 
     gap: 15px; 
+
+    max-width: 350px; 
+    width: 100%;
+}
+.form-predict form{
+    background-color: rgb(170, 255, 170);
+    padding: 20px;
+    border: 3px solid black;
+    opacity: 0.5;
+    margin: 0 auto; 
+
+    max-width: 350px; 
+    width: 100%;
+    margin-top: 30px;
 }
