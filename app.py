@@ -20,6 +20,7 @@ def train():
         model.preprocessing()
         model.train_RF()
         trained = True
+        #something should appear
         return jsonify({"status": "trained successfully"})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -35,6 +36,14 @@ def evaluate():
         return jsonify({"error": "Model not trained yet"}), 400
     results = model.evaluate()
     return jsonify(results)
+
+@app.route('/about')
+def about():
+    return render_template('about.html')
+
+@app.route('/help')
+def help():
+    return render_template('help.html')
 
 if __name__ == '__main__':
     app.run(debug=True)

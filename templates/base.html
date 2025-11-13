@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ML Flask App</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>🚢 Titanic Survival Predictor 🚢</h1>
+    {{% block title %}}
+
+    {{% endblock %}}
+    <nav>
+        <ul>
+            <li><a href="/">🏠 Home</a></li>
+            <li><a href="{{ url_for('train') }}">📊 Train the model</a></li>
+            <li><a href="{{ url_for('status') }}">🔍 Status</a></li>
+            <li><a href="{{ url_for('evaluate') }}">🎯 Predict</a></li>
+            <li><a href="{{ url_for('about') }}">❓ About</a></li>
+            <li><a href="{{ url_for('help') }}">💡 Help</a></li>
+        </ul>
+    </nav>
+    {{% block content %}}
+
+    {{% endblock %}}
+</body>
+</html>
