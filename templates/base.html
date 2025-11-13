@@ -6,12 +6,12 @@
 </head>
 <body>
     <h1>🚢 Titanic Survival Predictor 🚢</h1>
-    {{% block title %}}
+    {% block title %}
 
-    {{% endblock %}}
+    {% endblock %}
     <nav>
         <ul>
-            <li><a href="/">🏠 Home</a></li>
+            <li><a href="{{ url_for('home') }}">🏠 Home</a></li>
             <li><a href="{{ url_for('train') }}">📊 Train the model</a></li>
             <li><a href="{{ url_for('status') }}">🔍 Status</a></li>
             <li><a href="{{ url_for('evaluate') }}">🎯 Predict</a></li>
@@ -19,8 +19,8 @@
             <li><a href="{{ url_for('help') }}">💡 Help</a></li>
         </ul>
     </nav>
-    {{% block content %}}
+    {% block content %}
 
-    {{% endblock %}}
+    {% endblock %}
 </body>
 </html>
