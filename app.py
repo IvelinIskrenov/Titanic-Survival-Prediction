@@ -28,7 +28,8 @@ def train():
 
 @app.route('/status')
 def status():
-    return jsonify({"trained": trained})
+    #return jsonify({"trained": trained})
+    return render_template('status.html', trained=trained)
 
 @app.route('/evaluate')
 def evaluate():

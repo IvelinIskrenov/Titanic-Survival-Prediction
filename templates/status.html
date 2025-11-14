@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block title %}
+    <h2>Status</h2>
+{% endblock %}
+{% block content %}
+    {% if trained %}
+        <p>Model is trained !</p>
+    {% else %}
+        <p>Model isn't trained yet!</p>
+    {% endif %}
+{% endblock %}
