@@ -3,5 +3,44 @@
     <h2>Help</h2>
 {% endblock %}
 {% block content %}
-    This about Guid
+    <section class="attribute"> 
+        <p>Travel class (social class / ticket type):</p>
+        <p>1 = First class (luxury)</p>
+        <p>2 = Second class</p>
+        <p>3 = Third class (cheap ticket)</p>
+        <p>Indicates social status – the wealthiest often survived longer</p>
+    </section>
+    <section class="attribute">
+        <p>sex: Passenger gender. One of the strongest survival factors – women were prioritized during evacuation.</p>
+    </section>
+    <section class="attribute">
+        <p>Age: Age in years</p>
+    </section>
+    <section class="attribute">
+        <p>Number of siblings or spouse on board and Number of parents/children on board:</p>
+        <p>
+            On the Titanic, women and children were taken on board first, often with their families in lifeboats.
+            If you had a family on board, you were more likely to be “in a group” that boarded a lifeboat.
+            The passengers who were completely alone were more likely to be men in third class—a group with a very low chance of survival.
+        </p>
+    </section>
+    <section class="attribute">
+        <p>Ticket price:</p>
+        <p>
+            Ticket price in British pounds.
+            A higher value usually means first class.
+        </p>
+    </section>
+    <section class="attribute">
+        <p>Who:</p>
+        <p>Summarizes age and gender:</p>
+        <p>man = male over 18</p>
+        <p>woman = female over 18</p>
+        <p>child = child under 18</p>
+    </section>
+    <section class="attribute">
+        <p>adult_male:</p>
+        <p>True = adult male</p>
+        <p>False = woman or child</p>
+    </section>
 {% endblock %}
