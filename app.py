@@ -9,7 +9,7 @@ trained = False
 
 @app.route('/')
 def home():
-    return render_template('index.html')
+    return render_template('index.html'), 200
 
 @app.route('/train')
 def train():
@@ -21,7 +21,7 @@ def train():
         model.train_RF()
         trained = True
         #something should appear
-        return jsonify({"status": "trained successfully"})
+        return jsonify({"status": "trained successfully"}),200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
@@ -29,22 +29,25 @@ def train():
 @app.route('/status')
 def status():
     #return jsonify({"trained": trained})
-    return render_template('status.html', trained=trained)
+    return render_template('status.html', trained=trained), 200
 
 @app.route('/evaluate')
 def evaluate():
     if not trained:
         return jsonify({"error": "Model not trained yet"}), 400
-    results = model.evaluate()
-    return jsonify(results)
+    try:
+        results = model.evaluate()
+        return jsonify(results), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/about')
 def about():
-    return render_template('about.html')
+    return render_template('about.html'), 200
 
 @app.route('/help')
 def help():
-    return render_template('help.html')
+    return render_template('help.html'), 200
 
 if __name__ == '__main__':
     app.run(debug=True)
