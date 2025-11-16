@@ -1,4 +1,4 @@
-**Titanic Survival Predictor**
+**Titanic Survival Predictor**  
 A web-based application for predicting the survival of passengers on the Titanic using machine learning models. This project leverages Random Forest and Logistic Regression algorithms to predict survival based on passenger data.
 
 **Features**
