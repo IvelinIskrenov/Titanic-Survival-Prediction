@@ -66,21 +66,36 @@ Uses GridSearchCV for hyperparameter tuning.
 Visualizes feature coefficient magnitudes.
 Supports cross-validation accuracy evaluation.
 
-Project Structure
-├── app.py                     # Flask application
-├── TitanicSurvivalPredictionsModel.py  # ML model and pipeline
-├── templates/
-│   ├── base.html
-│   ├── index.html
-│   ├── about.html
-│   ├── help.html
-│   ├── status.html
-│   └── train.html
-├── static/
-│   └── style.css
-├── tests/
-│   └── test_model.py          # Unit tests
-└── README.md
+Project Structure  
+
+├── app.py                     # Flask application  
+
+├── TitanicSurvivalPredictionsModel.py  # ML model and pipeline  
+
+├── templates/  
+
+│   ├── base.html  
+
+│   ├── index.html  
+
+│   ├── about.html  
+
+│   ├── help.html  
+
+│   ├── status.html  
+
+│   └── train.html  
+
+├── static/  
+
+│   └── style.css  
+
+├── tests/  
+
+│   └── test_model.py          # Unit tests  
+
+└── README.md  
+
 
 
 **How It Works**
@@ -91,12 +106,14 @@ Model Training: Trains both Random Forest and Logistic Regression with optimized
 Evaluation: Provides test accuracy, confusion matrix visualization, and feature importance plots.
 Web Integration: Flask routes allow users to interact with the model and view results.
 
-**Testing**
+**Testing**  
+
 Unit tests are implemented using unittest. To run tests:
 
 python -m unittest discover tests
 
-**Visualization**
+**Visualization**  
+
 Feature Importance: Shows which features most influence Random Forest predictions.
 Coefficient Magnitudes: Shows influence of features for Logistic Regression.
 Confusion Matrix: Visualizes model performance on the test set.
