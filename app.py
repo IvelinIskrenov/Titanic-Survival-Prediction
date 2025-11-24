@@ -44,12 +44,23 @@ def status():
 
 @app.route('/predict', methods=['POST'])
 def predict():
-    
+    if not (trainedLR or trainedRF):
+        return jsonify({"error": "No trained model available!"}), 400
+
+    try:
+        items = request.form.getlist("items")
+        prediction = model.single_predict(items)
+
+        return jsonify({"prediction": prediction}), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/evaluate')
 def evaluate():
-    if not trained:
-        return jsonify({"error": "Model not trained yet"}), 400
+    if not (trainedLR or trainedRF):
+        return jsonify({"error": "No trained model yet"}), 400
+
     try:
         results = model.evaluate()
         return jsonify(results), 200

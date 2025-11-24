@@ -198,6 +198,7 @@ class SurvivalPrediction():
 
         
     def model_predict(self, model) -> None:
+        '''Model predicition for both Algorithms'''
         if model == "RF":            
             self.__y_pred = self.__model_RF.predict(self.__X_test)
             print(classification_report(self.__y_test, self.__y_pred))
@@ -221,6 +222,7 @@ class SurvivalPrediction():
         plt.show()
 
     def print_test_score(self, model) -> None:
+        '''Test accuracy for both algorithms'''
         # Print test score
         if model == "RF":            
             test_score = self.__model_RF.score(self.__X_test, self.__y_test)
@@ -237,7 +239,11 @@ class SurvivalPrediction():
         elif model == "LR":
             lr = self.__model_LR.best_estimator_ 
             print("LR CV acc:", cross_val_score(lr, self.__X_train, self.__y_train, cv=cv, scoring='accuracy').mean())
-        
+    
+    #Should be done
+    def single_predict(self, items):
+        return
+       
     def run_pipeline(self):
         self.load_data()
         self.split_data()
