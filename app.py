@@ -1,35 +1,50 @@
-from flask import Flask, jsonify, render_template
+from flask import Flask, jsonify, render_template, request
 from TitanicSurvivalPredictionsModel import SurvivalPrediction
 
 app = Flask(__name__)
 
 model = SurvivalPrediction()
-trained = False
-
+trainedLR = False
+trainedRF = False
 
 @app.route('/')
 def home():
     return render_template('index.html'), 200
 
-@app.route('/train')
-def train():
-    global trained
+@app.route('/train/LR')
+def train_LR():
+    global trainedLR
+    try:
+        model.load_data()
+        model.split_data()
+        model.preprocessing()
+        model.train_logistic_regression()
+        trainedLR = True
+        return jsonify({"status": "trained successfully"}),200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/train/RF')
+def train_RF():
+    global trainedRF
     try:
         model.load_data()
         model.split_data()
         model.preprocessing()
         model.train_RF()
-        trained = True
-        #something should appear
+        trainedRF = True
         return jsonify({"status": "trained successfully"}),200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-
 @app.route('/status')
 def status():
     #return jsonify({"trained": trained})
-    return render_template('status.html', trained=trained), 200
+    return render_template('status.html', trainedLR=trainedLR, trainedRF=trainedRF), 200
+
+@app.route('/predict', methods=['POST'])
+def predict():
+    
 
 @app.route('/evaluate')
 def evaluate():
