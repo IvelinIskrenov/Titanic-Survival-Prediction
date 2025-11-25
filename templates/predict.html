@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}
+    <h2>Predict result</h2>
+{% endblock %}
+{% block content %}
+    <section class="predict_result">
+        <h3>Survival status:</h3>
+        <p><strong>{{ predict_result.survival_status }}</strong></p>
+        
+        <h3>Details:</h3>
+        <ul>
+            <li>
+                Predict value (0 = No, 1 = Yes): 
+                <strong>{{ predict_result.prediction }}</strong>
+            </li>
+            <li>
+                Model used for prediciting: 
+                <strong>{{ predict_result.model_used }}</strong>
+            </li>
+        </ul>
+    </section>
+{% endblock %}

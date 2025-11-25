@@ -149,3 +149,23 @@ form {
     width: 100%;
     margin-top: 30px;
 }
+
+.predict_result {
+    text-align: left; 
+    color: white; 
+    
+    max-width: 600px; 
+    margin: 20px auto; 
+    padding: 20px;
+
+    border: 2px solid #ffffff;
+    border-radius: 8px;
+    background-color: rgba(0, 0, 0, 0.5); 
+}
+
+.predict_result h3,
+.predict_result p,
+.predict_result li {
+    color: white; 
+} 
+

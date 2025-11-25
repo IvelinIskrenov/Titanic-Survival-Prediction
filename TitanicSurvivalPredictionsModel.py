@@ -240,9 +240,51 @@ class SurvivalPrediction():
             lr = self.__model_LR.best_estimator_ 
             print("LR CV acc:", cross_val_score(lr, self.__X_train, self.__y_train, cv=cv, scoring='accuracy').mean())
     
-    #Should be done
-    def single_predict(self, items):
-        return
+    def single_predict(self, raw_data_list):
+        '''
+        Predicts survival for a single set of input features using the best trained model (RF or LR)
+        '''
+
+        features = ['pclass', 'sex', 'age', 'sibsp', 'parch', 'fare', 'class', 'who', 'adult_male', 'alone']
+        
+        #convert the list of flask form data -> Pandas DF
+        try:
+            input_dict = dict(zip(features, raw_data_list))
+            
+            #numerical features -> float/int
+            input_dict['pclass'] = int(input_dict['pclass']) if input_dict['pclass'] else None
+            input_dict['age'] = float(input_dict['age']) if input_dict['age'] else None
+            input_dict['sibsp'] = int(input_dict['sibsp']) if input_dict['sibsp'] else None
+            input_dict['parch'] = int(input_dict['parch']) if input_dict['parch'] else None
+            input_dict['fare'] = float(input_dict['fare']) if input_dict['fare'] else None
+            #('sex', 'class', 'who', 'adult_male', 'alone') are categorical/object
+            
+            X_single = pd.DataFrame([input_dict], columns=features)
+        
+        except Exception as e:
+            return {"error": f"Input data conversion failed. Ensure all fields are filled correctly. Error: {str(e)}", "prediction": None}
+
+        # Determine the best available model to use (Prioritize RF, then LR)
+        model_to_use = None
+        model_name = None
+        
+        if self.__model_RF and hasattr(self.__model_RF, 'best_estimator_'):
+            model_to_use = self.__model_RF.best_estimator_
+            model_name = "Random Forest"
+        elif self.__model_LR and hasattr(self.__model_LR, 'best_estimator_'):
+            model_to_use = self.__model_LR.best_estimator_
+            model_name = "Logistic Regression"
+        else:
+            return {"error": "No trained model available to make a prediction.", "prediction": None}
+
+        #Make the prediction 
+        prediction = model_to_use.predict(X_single)[0]
+        
+        return {
+            "prediction": int(prediction),
+            "model_used": model_name,
+            "survival_status": "Survived" if prediction == 1 else "Did Not Survive"
+        }
        
     def run_pipeline(self):
         self.load_data()
