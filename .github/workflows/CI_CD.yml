@@ -54,8 +54,8 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/devops-project:latest .
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/titanic-survival-prediction:latest .
 
       - name: Push Docker image to Docker Hub
         run: |
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/devops-project:latest
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/titanic-survival-prediction:latest
