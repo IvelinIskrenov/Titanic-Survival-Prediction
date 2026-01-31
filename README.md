@@ -1,4 +1,7 @@
 **Titanic Survival Predictor**  
+
+![CI/CD Status](https://github.com/iveliniskrenov/TitanicSurvivalPrediction/actions/workflows/CI_CD.yml/badge.svg)
+
 A web-based application for predicting the survival of passengers on the Titanic using machine learning models. This project leverages Random Forest and Logistic Regression algorithms to predict survival based on passenger data.
 
 **Features**
@@ -47,10 +50,15 @@ http://127.0.0.1:5000/
 __Available Pages:__
 
 Home: Overview of the Titanic Survival Predictor.
+
 Train: Train the Random Forest model.
+
 Status: Check if the model is trained.
+
 Predict: Evaluate the model on the test set.
+
 About: Learn more about the Titanic disaster.
+
 Help: Detailed explanations of input features.
 
 **Machine Learning Models**
@@ -66,35 +74,32 @@ Uses GridSearchCV for hyperparameter tuning.
 Visualizes feature coefficient magnitudes.
 Supports cross-validation accuracy evaluation.
 
-Project Structure  
+## New Update - 31.01.2026
 
-├── app.py                     # Flask application  
+## Automation & CI/CD
 
-├── TitanicSurvivalPredictionsModel.py  # ML model and pipeline  
+This repository is fully automated using **GitHub Actions** to ensure code quality and seamless deployment:
 
-├── templates/  
+* **Continuous Integration (CI):**
+    * **Linting:** Code is automatically checked for PEP8 compliance using `flake8`.
+    * **Testing:** Automated unit tests are executed with `pytest` on every push to ensure the model logic remains intact.
+* **Continuous Delivery (CD):**
+    * **Dockerization:** Upon successful testing, the application is packaged into a **Docker Image**.
+    * **Image Registry:** The image is automatically pushed to [Docker Hub](https://hub.docker.com/u/iveliniskrenov), making it ready for production.
 
-│   ├── base.html  
+## 🐳 How to Run via Docker
 
-│   ├── index.html  
+You don't need to install Python or any dependencies. Simply pull the pre-built image from Docker Hub and run it:
 
-│   ├── about.html  
+```bash
+# Pull the latest image
+docker pull iveliniskrenov/titanic-project:latest
 
-│   ├── help.html  
+# Run the container (Map port 5000)
+docker run -p 5000:5000 iveliniskrenov/titanic-project
+\```
 
-│   ├── status.html  
-
-│   └── train.html  
-
-├── static/  
-
-│   └── style.css  
-
-├── tests/  
-
-│   └── test_model.py          # Unit tests  
-
-└── README.md  
+Once running, the app will be available at `http://localhost:5000`.
 
 
 
