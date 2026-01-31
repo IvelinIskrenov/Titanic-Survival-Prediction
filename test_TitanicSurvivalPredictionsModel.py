@@ -150,6 +150,7 @@ class TestSurvivalPrediction(unittest.TestCase):
 
         dummy_clf = MagicMock()
         dummy_clf.feature_importances_ = np.array([0.4, 0.3, 0.2, 0.06, 0.04])
+        dummy_clf.coef_ = np.array([[0.5, -0.2, 0.8, 0.1, -0.1]])
 
         fake_onehot = MagicMock()
         fake_onehot.get_feature_names_out.return_value = np.array(['sex_male', 'class_First', 'who_man'])
