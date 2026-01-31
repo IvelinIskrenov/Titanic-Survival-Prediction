@@ -103,6 +103,7 @@ Once running, the app will be available at `http://localhost:5000`.
 
 
 
+
 **How It Works**
 
 Data Loading: Loads Titanic dataset from seaborn.
