@@ -1,6 +1,7 @@
 **Titanic Survival Predictor**  
 
-![CI/CD Status](https://github.com/iveliniskrenov/TitanicSurvivalPrediction/actions/workflows/CI_CD.yml/badge.svg)
+![CI/CD Status](https://github.com/IvelinIskrenov/TitanicSurvivalPrediction/actions/workflows/CI_CD.yml/badge.svg)
+![CodeQL Analysis](https://github.com/IvelinIskrenov/TitanicSurvivalPrediction/actions/workflows/codeql.yml/badge.svg)
 
 A web-based application for predicting the survival of passengers on the Titanic using machine learning models. This project leverages Random Forest and Logistic Regression algorithms to predict survival based on passenger data.
 
